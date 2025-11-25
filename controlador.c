@@ -7,67 +7,6 @@
 #include <errno.h>
 #include <pthread.h>
 
-/*
- * Controlador de Reserva
- *
- * Este programa implementa únicamente el SERVIDOR del sistema de reservas.
- * La idea es que otros miembros del grupo implementen posteriormente los
- * clientes (Agentes de Reserva) respetando el protocolo descrito aquí.
- *
- * Invocación:
- *   ./controlador -i horaIni -f horaFin -s segHoras -t total -p pipeRecibe
- *
- * Rango de horas válido: 7-19 (formato 24 horas, enteros).
- *
- * ------------------ PROTOCOLO DE COMUNICACIÓN (versión simple) ------------------
- *
- * Todos los mensajes viajan como líneas de texto terminadas en '\n'.
- * El pipe 'pipeRecibe' se usa SOLO para la dirección Agente -> Controlador.
- * Para respuestas, cada Agente crea su propio pipe FIFO y envía su nombre
- * en el mensaje de registro.
- *
- * Tipos de mensaje Agente -> Controlador:
- *
- * 1) Registro de Agente:
- *      REG|<nombreAgente>|<fifoRespuesta>
- *
- *    - <nombreAgente>: cadena sin '|', identifica al agente.
- *    - <fifoRespuesta>: ruta del FIFO para enviar respuestas a este agente.
- *                        El agente se encarga de crear el FIFO antes de registrarse.
- *
- *    Respuesta del Controlador (en <fifoRespuesta>):
- *      TIME|<horaActual>
- *
- * 2) Solicitud de reserva (por familia):
- *      REQ|<nombreAgente>|<nombreFamilia>|<horaSolicitada>|<personas>
- *
- *    - <horaSolicitada>: entero [7,19]
- *    - <personas>: entero > 0
- *
- *    Respuestas posibles (todas enviadas al FIFO de <nombreAgente>):
- *
- *    a) Reserva OK en la hora solicitada:
- *         RESP|OK|<nombreFamilia>|<horaInicio>|<horaFin>
- *
- *    b) Reserva reprogramada para otras horas:
- *         RESP|REPROG|<nombreFamilia>|<horaInicio>|<horaFin>
- *
- *    c) Reserva negada por extemporánea (ya pasó la hora),
- *       pero sin espacio para reprogramar:
- *         RESP|NEG_EXTEMP|<nombreFamilia>|0|0
- *
- *    d) Reserva negada (sin cupo, fuera de rango o excede aforo):
- *         RESP|NEG|<nombreFamilia>|0|0
- *
- * 3) Fin de simulación:
- *      El Controlador, al terminar el día, envía a cada agente registrado:
- *         END|FIN_SIMULACION
- *
- *      Cada grupo puede decidir cómo hará que el Agente termine al recibir
- *      este mensaje.
- * -----------------------------------------------------------------------------
- */
-
 #define MIN_HOUR 7
 #define MAX_HOUR 19
 #define MAX_NAME_LEN 64
