@@ -31,7 +31,7 @@ typedef struct {
     char fifoPath[128];
 } AgentInfo;
 
-// Estado global de la simulación
+// Estado global de la simulaciaIn
 static int horaIni = 7;
 static int horaFin = 19;
 static int segHoras = 1;
@@ -41,21 +41,21 @@ static char pipeRecibePath[128] = {0};
 static int horaActual = 7;
 static int simulacionTerminada = 0;
 
-// Estadísticas
-static int personasPorHora[24 + 1]; // índice 1-24, usamos 7-19
+// EstadaAsticas
+static int personasPorHora[24 + 1]; // aAndice 1-24, usamos 7-19
 static int solicitudesNegadas = 0;
 static int solicitudesAceptadasExactas = 0;
 static int solicitudesReprogramadas = 0;
 
 // Eventos de entrada/salida por hora
-static ResNode *entradasPorHora[24 + 3]; // un poco más para salidas hasta hora+2
+static ResNode *entradasPorHora[24 + 3]; // un poco maes para salidas hasta hora+2
 static ResNode *salidasPorHora[24 + 3];
 
 // Agentes registrados
 static AgentInfo agentes[MAX_AGENTS];
 static int numAgentes = 0;
 
-// Sincronización
+// SincronizaciaIn
 static pthread_mutex_t mutexDatos = PTHREAD_MUTEX_INITIALIZER;
 
 // ---------------------------------------------------------------------------
@@ -106,7 +106,7 @@ static AgentInfo *registrar_agente(const char *nombre, const char *fifoPath) {
         return a;
     }
     if (numAgentes >= MAX_AGENTS) {
-        fprintf(stderr, "Se alcanzó el máximo de agentes registrados.\n");
+        fprintf(stderr, "Se alcanzaI el maeximo de agentes registrados.\n");
         return NULL;
     }
     AgentInfo *nuevo = &agentes[numAgentes++];
@@ -131,7 +131,7 @@ static void enviar_mensaje_agente(const AgentInfo *ag, const char *mensaje) {
 }
 
 // ---------------------------------------------------------------------------
-// Lógica de reservas
+// LaIgica de reservas
 // ---------------------------------------------------------------------------
 
 static int hay_cupo_bloque(int horaInicio, int personas) {
@@ -166,7 +166,7 @@ static void procesar_solicitud_reserva(const char *nombreAgente,
         return;
     }
 
-    printf("Petición recibida de agente=%s familia=%s hora=%d personas=%d\n",
+    printf("PeticiaIn recibida de agente=%s familia=%s hora=%d personas=%d\n",
            nombreAgente, familia, horaSolicitada, personas);
 
     char respuesta[256];
@@ -206,7 +206,7 @@ static void procesar_solicitud_reserva(const char *nombreAgente,
         return;
     }
 
-    // Buscar bloque alternativo (para extemporáneas o sin cupo en la hora pedida)
+    // Buscar bloque alternativo (para extemporaeneas o sin cupo en la hora pedida)
     int horaAlt = buscar_bloque_alternativo(personas);
     if (horaAlt != -1) {
         Reservation r;
@@ -229,7 +229,7 @@ static void procesar_solicitud_reserva(const char *nombreAgente,
         return;
     }
 
-    // No se encontró ningún bloque
+    // No se encontraI ningaUn bloque
     solicitudesNegadas++;
     if (esExtemporanea) {
         snprintf(respuesta, sizeof(respuesta),
@@ -310,7 +310,7 @@ static void imprimir_reporte_final(void) {
         }
     }
 
-    printf("Horas pico (mayor ocupación = %d personas): ", maxPersonas);
+    printf("Horas pico (mayor ocupaciaIn = %d personas): ", maxPersonas);
     for (int h = horaIni; h <= horaFin; ++h) {
         if (personasPorHora[h] == maxPersonas) {
             printf("%d ", h);
@@ -318,7 +318,7 @@ static void imprimir_reporte_final(void) {
     }
     printf("\n");
 
-    printf("Horas de menor ocupación (=%d personas): ", minPersonas);
+    printf("Horas de menor ocupaciaIn (=%d personas): ", minPersonas);
     for (int h = horaIni; h <= horaFin; ++h) {
         if (personasPorHora[h] == minPersonas) {
             printf("%d ", h);
@@ -387,7 +387,7 @@ static int parse_args(int argc, char *argv[]) {
     if (horaIni < MIN_HOUR || horaIni > MAX_HOUR ||
         horaFin < MIN_HOUR || horaFin > MAX_HOUR ||
         horaIni >= horaFin) {
-        fprintf(stderr, "Rango de horas inválido. Debe estar entre %d y %d y horaIni<horaFin.\n",
+        fprintf(stderr, "Rango de horas invaelido. Debe estar entre %d y %d y horaIni<horaFin.\n",
                 MIN_HOUR, MAX_HOUR);
         return -1;
     }
@@ -399,7 +399,7 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 // ---------------------------------------------------------------------------
-// Bucle principal de recepción
+// Bucle principal de recepciaIn
 // ---------------------------------------------------------------------------
 
 static void manejar_linea_mensaje(char *linea) {
@@ -455,7 +455,7 @@ int main(int argc, char *argv[]) {
     }
 
     horaActual = horaIni;
-    printf("Controlador iniciado. Simulación de %d a %d, aforo=%d, segHoras=%d\n",
+    printf("Controlador iniciado. SimulaciaIn de %d a %d, aforo=%d, segHoras=%d\n",
            horaIni, horaFin, aforoMaximo, segHoras);
 
     // Crear FIFO principal si no existe

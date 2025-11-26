@@ -1,22 +1,19 @@
-# Lista de que falta por hacer (Porfa actualizar cuando este listo)
+## Proyecto Sistemas Operativos
 
-Parsear sus propios argumentos (-s nombre -a fileSolicitud -p pipeRecibe)
+### Funcionamiento:
+1. Limpiar codigo anterior y re-compilar el proyecto
+```
+make clean
+make
+```
+2. Inciar el controlador. Los datos de controlador significan: -i: Hora Incial, -f: Hora Final, -s: Valor que indica a cuantos segundos equivale una hora en la simulacion, -t: Total de personas que caben como maximo en el parque, -p: Pipe del programa.
+```
+./controlador -i 7 -f 19 -s 1 -t 50 -p /tmp/pipe1
+```
+3. Inciar agentes con csvs de prueba (esto debe hacerse en una terminal diferente al controlador y cada agente debe tener su propia terminal). Los datos de los agentes significan: -s: Nombre del agente, -a: Archivo donde se encuentran las reservaciones (el formato de este es: Familia,hora,personas), -p: Pipe del programa.
+```
+./agente -s AgenteA -a solicitudesA.csv -p /tmp/pipe1
+./agente -s AgenteB -a solicitudesB.csv -p /tmp/pipe1
+```
 
-Crear su FIFO de respuesta
-
-Enviar REG|nombre|ruta_fifo al pipeRecibe y leer TIME|horaActual
-
-Leer su archivo CSV, construir cada REQ|... respetando que la hora no sea anterior a horaActual, enviarlo y esperar la línea de respuesta que puede dar diferentes tipos de respuesta
-EJP: 
-   Si formato/rangos/aforo inválidos:
-   "RESP|NEG|<familia>|0|0"
-   Si se acepta exactamente en la hora pedida:
-   "RESP|OK|<familia>|<horaInicio>|<horaFin>"
-   Si se reprograma a otro bloque de 2 horas:
-   "RESP|REPROG|<familia>|<horaInicio>|<horaFin>"
-   Si es extemporánea y ya no hay bloque alternativo:
-   "RESP|NEG_EXTEMP|<familia>|0|0"
-
-Imprimir la respuesta bonita.
-
-Detenerse cuando reciba END|FIN_SIMULACION y mostrar Agente <nombre> termina.
+Una vez se corre el programa y los agentes se deberia ver hora por hora las ocurrencias dentro del parque como la entrada de familias, la salida de estas, reprogramaciones, etc.

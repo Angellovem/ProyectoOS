@@ -1,12 +1,14 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -pthread -O2
 
-all: controlador
+all: controlador agente
 
 controlador: controlador.c
 	$(CC) $(CFLAGS) -o controlador controlador.c
 
-clean:
-	rm -f controlador
+agente: agente.c
+	$(CC) $(CFLAGS) -o agente agente.c
 
+clean:
+	rm -f controlador agente
 
